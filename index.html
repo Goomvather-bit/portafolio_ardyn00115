@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portafolio Adrian Ibarra</title>
+<meta name="description" content="Portafolio de Adrian Ibarra, 3D Texture Artist. Texturizado PBR para props y personajes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Big+Shoulders+Display:wght@800;900&family=DM+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#030717;--panel:#07124a;--accent:#3fdcff;--on-accent:#020a26;--hi:#dff7ff;--ink:#020a26;--mist:#8eb2ee;--cobalt:#1747ff;
+--f-d:'Big Shoulders Display',Impact,'Arial Narrow',sans-serif;--f-b:'Barlow','Segoe UI',system-ui,sans-serif;--f-m:'DM Mono',ui-monospace,Menlo,Consolas,monospace;--slant:-8deg;color-scheme:dark}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{margin:0;background:var(--bg);color:var(--hi);font:17px/1.55 var(--f-b);padding:0 max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+img{max-width:100%}[hidden]{display:none!important}a{color:inherit}
+:focus-visible{outline:3px solid var(--hi);outline-offset:3px}
+
+/* Fondo: formas diagonales, aro tenue, lluvia y agua */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:radial-gradient(120% 80% at 85% 0%,color-mix(in srgb,var(--cobalt) 34%,var(--bg)) 0%,var(--bg) 62%)}
+.bg::before{content:"";position:absolute;inset:0;background:color-mix(in srgb,var(--cobalt) 16%,transparent);clip-path:polygon(46% 0,100% 0,100% 70%,78% 100%,62% 100%)}
+.bg::after{content:"";position:absolute;right:-12vmin;top:-10vmin;width:min(70vmin,640px);max-width:100%;aspect-ratio:1;border-radius:50%;border:2px solid color-mix(in srgb,var(--accent) 22%,transparent);box-shadow:inset 0 0 90px color-mix(in srgb,var(--accent) 10%,transparent)}
+#rain{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.water{position:fixed;inset:auto 0 0;height:16vh;z-index:0;pointer-events:none;background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--cobalt) 30%,transparent))}
+
+.app{position:relative;z-index:1;display:grid;grid-template-columns:250px minmax(0,1fr);gap:clamp(24px,4vw,64px);max-width:1280px;margin-inline:auto;overflow-x:clip}
+main{min-width:0}section,header.hero{scroll-margin-top:24px}
+
+/* Menú estilo Persona */
+.menu{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;display:flex;flex-direction:column;gap:24px;padding-block:32px}
+.mark{width:76px;height:76px;display:grid;place-items:center;flex:none;background:var(--accent);color:var(--on-accent);font:900 1.25rem/1 var(--f-d);letter-spacing:.04em;clip-path:polygon(50% 0,62% 34%,100% 38%,70% 60%,80% 100%,50% 76%,20% 100%,30% 60%,0 38%,38% 34%);padding-top:6px}
+.menu ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.menu li{position:relative}
+.menu li:nth-child(odd) a{--r:-3deg}.menu li:nth-child(even) a{--r:2deg}
+.menu a{display:block;padding:14px 22px 14px 30px;font:900 1.7rem/1 var(--f-d);letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--hi);
+background:linear-gradient(90deg,var(--accent) 0 9px,var(--panel) 9px);clip-path:polygon(0 10%,100% 0,95% 100%,3% 92%);
+transform:rotate(var(--r)) skewX(-6deg);transition:transform .2s cubic-bezier(.3,1.6,.5,1),background .15s,color .15s}
+.menu a:hover{transform:rotate(var(--r)) skewX(-6deg) translateX(10px)}
+.menu a[aria-current="true"]{background:var(--hi);color:var(--ink);transform:rotate(var(--r)) skewX(-6deg) translateX(24px) scale(1.1)}
+.menu li:has(a[aria-current="true"]){filter:drop-shadow(7px 7px 0 var(--cobalt))}
+.menu li:has(a[aria-current="true"])::before{content:"";position:absolute;left:-6px;top:50%;margin-top:-12px;border:12px solid transparent;border-left:20px solid var(--accent);border-right:0;z-index:2}
+/* Animación de abanico al cambiar de menú: los botones caen girando desde un pivote común */
+.menu li:nth-child(2){--n:1}.menu li:nth-child(3){--n:2}.menu li:nth-child(4){--n:3}.menu li:nth-child(5){--n:4}
+@keyframes fan{0%{transform:rotate(-55deg);opacity:0}65%{transform:rotate(5deg);opacity:1}100%{transform:none;opacity:1}}
+@keyframes fanm{0%{transform:translateY(-26px) rotate(-10deg);opacity:0}100%{transform:none;opacity:1}}
+.menu.fan li{transform-origin:0 50%;animation:fan .5s cubic-bezier(.25,1,.4,1) backwards;animation-delay:calc(var(--n,0)*70ms)}
+/* Corte diagonal azul al cambiar de sección */
+.wipe{position:fixed;inset:0;z-index:20;pointer-events:none;overflow:hidden}
+.wipe i{position:absolute;top:-10%;bottom:-10%;left:-60%;width:60%;transform:translateX(0) skewX(-18deg);visibility:hidden}
+.wipe i:nth-child(1){background:var(--accent)}.wipe i:nth-child(2){background:var(--cobalt)}
+.wipe.go i{visibility:visible;animation:wipe .75s cubic-bezier(.7,0,.3,1) both}
+.wipe.go i:nth-child(2){animation-delay:.08s}
+@keyframes wipe{to{transform:translateX(300%) skewX(-18deg)}}
+
+/* Hero */
+.hero{padding-top:clamp(36px,7vw,88px)}
+.kicker{display:inline-flex;align-items:baseline;gap:10px;margin:0 0 clamp(20px,3vw,36px);padding:7px 16px 7px 12px;border:2px solid var(--hi);font:500 .85rem/1 var(--f-m);letter-spacing:.14em;text-transform:uppercase;transform:skewX(var(--slant))}
+h1.name{margin:0;font:900 clamp(4.4rem,18vw,12.5rem)/.82 var(--f-d);text-transform:uppercase;color:var(--hi);text-shadow:.05em .05em 0 var(--cobalt);transform:rotate(-3deg) skewX(-8deg);transform-origin:left bottom}
+.ln{display:block}.ln.l2{padding-left:.32em}
+.ch{display:inline-block;animation:slam .5s cubic-bezier(.2,1.5,.4,1) backwards;animation-delay:calc(var(--i)*50ms)}
+@keyframes slam{from{transform:translateY(-40vh) scale(1.8) rotate(-12deg);opacity:0}to{transform:none;opacity:1}}
+.role{display:inline-block;margin-top:clamp(26px,3vw,38px);padding:10px 24px 10px 18px;background:var(--hi);color:var(--ink);font:800 clamp(1.25rem,3.4vw,2rem)/1 var(--f-d);letter-spacing:.14em;text-transform:uppercase;transform:skewX(var(--slant));box-shadow:7px 7px 0 var(--cobalt)}
+.lede{max-width:54ch;margin:28px 0 0;font-size:1.15rem}
+.cta{display:flex;flex-wrap:wrap;gap:16px;margin-top:30px}
+.btn{display:inline-block;padding:15px 30px;font:800 1.2rem/1 var(--f-d);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;clip-path:polygon(4% 0,100% 6%,96% 100%,0 94%);transition:transform .2s cubic-bezier(.3,1.6,.5,1);border:0;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:var(--hi);color:var(--ink)}
+.btn:hover{transform:translateY(-3px) rotate(-1.5deg)}
+.maps{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:40px}
+.maps small{flex-basis:100%;font:400 .72rem/1 var(--f-m);letter-spacing:.12em;text-transform:uppercase;color:var(--mist)}
+.maps span{padding:6px 10px;background:var(--panel);border-left:4px solid var(--accent);font:500 .78rem/1 var(--f-m);letter-spacing:.1em;text-transform:uppercase}
+
+/* Secciones */
+section{padding-top:clamp(64px,9vw,120px)}
+.sh{display:flex;flex-wrap:wrap;align-items:end;gap:12px 24px}
+.sh h2{margin:0;font:900 clamp(2.6rem,8vw,5rem)/.9 var(--f-d);text-transform:uppercase;letter-spacing:.02em;text-wrap:balance}
+.sh h2 span{display:inline-block;padding:.06em .34em .06em .22em;background:var(--hi);color:var(--ink);transform:rotate(-2deg) skewX(var(--slant));box-shadow:.09em .09em 0 var(--cobalt)}
+.sh p{margin:0;font:400 .8rem/1.4 var(--f-m);letter-spacing:.08em;text-transform:uppercase;color:var(--mist);padding-bottom:.5em}
+
+/* Piezas */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:34px;margin-top:44px}
+.card{position:relative;scroll-margin-top:90px;min-width:0;padding-bottom:26px;background:var(--panel);clip-path:polygon(0 0,100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%);transition:transform .2s cubic-bezier(.3,1.6,.5,1)}
+.card:nth-of-type(odd){transform:rotate(-1deg)}.card:nth-of-type(even){transform:rotate(1deg)}
+.card:hover{transform:rotate(0) translateY(-4px)}
+.shot{position:relative;aspect-ratio:1/1;max-width:100%;display:grid;place-items:center;overflow:hidden;background:repeating-linear-gradient(115deg,color-mix(in srgb,var(--accent) 30%,transparent) 0 14px,transparent 14px 28px),var(--ink);border-top:6px solid var(--accent)}
+.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.shot em{font:500 .8rem/1 var(--f-m);letter-spacing:.16em;text-transform:uppercase;font-style:normal}
+.tag{position:absolute;left:0;top:0;padding:6px 14px 6px 10px;background:var(--hi);color:var(--ink);font:500 .7rem/1 var(--f-m);letter-spacing:.14em;text-transform:uppercase}
+.card h3{margin:22px 22px 0;font:900 2rem/1 var(--f-d);letter-spacing:.03em;text-transform:uppercase}
+.card p{margin:10px 22px 0;color:var(--mist)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:16px 22px 0}
+.chips span{padding:5px 9px;background:var(--accent);color:var(--on-accent);font:500 .74rem/1 var(--f-m);letter-spacing:.06em}
+.note{margin:24px 0 0;max-width:62ch;font:400 .8rem/1.6 var(--f-m);letter-spacing:.04em;color:var(--mist)}
+
+/* Detalle de cada pieza */
+.open{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;background:none;border:0;padding:0;margin:0;text-align:left;cursor:pointer}
+.open::after{content:"";position:absolute;inset:0}
+.open:focus-visible{outline:none}
+.open:focus-visible::after{outline:3px solid var(--hi);outline-offset:-8px}
+.more{display:block;margin:16px 22px 0;font:500 .78rem/1 var(--f-m);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.card.is-open{background:color-mix(in srgb,var(--panel) 65%,var(--cobalt))}
+.card.is-open .shot{border-top-color:var(--hi)}
+.card.is-open .more{color:var(--hi)}
+.detail{grid-column:1/-1;display:grid;grid-template-rows:0fr;scroll-margin-top:96px;transition:grid-template-rows .45s cubic-bezier(.25,1,.4,1)}
+.detail.on{grid-template-rows:1fr}
+.detail-in{min-height:0;overflow:hidden}
+.detail-box{padding:26px 26px 30px;background:var(--panel);border-top:6px solid var(--hi);clip-path:polygon(0 0,100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%)}
+.detail-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.detail-head h4{margin:0;font:900 clamp(1.6rem,4vw,2.4rem)/1 var(--f-d);letter-spacing:.04em;text-transform:uppercase}
+.close{padding:11px 20px;border:0;background:var(--hi);color:var(--ink);font:800 1rem/1 var(--f-d);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;clip-path:polygon(4% 0,100% 6%,96% 100%,0 94%);transition:background .15s}
+.close:hover{background:var(--accent)}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
+.ph{position:relative;margin:0;min-height:0;aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;background:repeating-linear-gradient(115deg,color-mix(in srgb,var(--accent) 22%,transparent) 0 12px,transparent 12px 24px),var(--ink);border-left:4px solid var(--accent)}
+.ph:first-child{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+.ph em{font:500 .85rem/1 var(--f-m);letter-spacing:.16em;text-transform:uppercase;font-style:normal;color:var(--hi)}
+.ph-tag{position:absolute;left:0;top:0;padding:5px 10px;background:var(--hi);color:var(--ink);font:500 .66rem/1 var(--f-m);letter-spacing:.14em;text-transform:uppercase}
+.detail.on .ph{animation:tileIn .45s cubic-bezier(.2,1.4,.4,1) backwards;animation-delay:calc(var(--k)*60ms)}
+@keyframes tileIn{from{transform:translateY(-22px) rotate(-4deg);opacity:0}to{transform:none;opacity:1}}
+
+.ph.has-img{background:var(--ink)}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.tiles.plain{grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))}
+.tiles.plain .ph,.tiles.plain .ph:first-child,.tiles.plain .ph:last-child{grid-column:auto;grid-row:auto;aspect-ratio:4/3}
+.linkout{display:inline-block;margin-top:22px}
+
+/* Material */
+.mat{display:grid;grid-template-columns:minmax(0,460px) minmax(0,1fr);gap:clamp(24px,4vw,56px);margin-top:40px;align-items:start}
+.mat canvas{display:block;width:100%;max-width:100%;aspect-ratio:1;background:var(--panel);touch-action:pan-y;cursor:crosshair;border:4px solid var(--hi);box-shadow:10px 10px 0 var(--cobalt)}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tabs button{padding:11px 18px;border:0;background:var(--panel);color:var(--hi);font:500 .82rem/1 var(--f-m);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;clip-path:polygon(8% 0,100% 0,92% 100%,0 100%);transition:background .15s,color .15s}
+.tabs button:hover{background:var(--accent);color:var(--on-accent)}
+.tabs button[aria-selected="true"]{background:var(--hi);color:var(--ink)}
+#mat-title{margin:28px 0 0;font:900 2.6rem/1 var(--f-d);text-transform:uppercase;letter-spacing:.03em;color:var(--accent)}
+#mat-desc{margin:10px 0 0;min-height:5.2em;max-width:46ch;font-size:1.1rem}
+
+/* Herramientas */
+.tools{list-style:none;margin:40px 0 0;padding:0;display:grid;border-top:3px solid var(--hi)}
+.tools li{position:relative;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 24px;padding:18px 4px 18px 26px;border-bottom:1px solid color-mix(in srgb,var(--hi) 28%,transparent)}
+.tools li::before{content:"";position:absolute;left:0;top:50%;width:12px;height:24px;background:var(--accent);transform:translateY(-50%) skewX(var(--slant))}
+.tools b{font:900 clamp(1.6rem,4vw,2.4rem)/1 var(--f-d);letter-spacing:.04em;text-transform:uppercase}
+.tools span{font:400 .85rem/1.3 var(--f-m);letter-spacing:.08em;text-transform:uppercase;color:var(--mist)}
+
+/* Contacto */
+.contact h3{margin:40px 0 0;max-width:16ch;font:900 clamp(2.4rem,7vw,4.6rem)/.95 var(--f-d);text-transform:uppercase;text-wrap:balance}
+.contact dl{display:grid;gap:14px;margin:32px 0 0;max-width:560px}
+.contact dl div{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 18px;padding:14px 18px;background:var(--panel);border-left:8px solid var(--accent)}
+.contact dt{min-width:7.5rem;font:400 .78rem/1 var(--f-m);letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
+.contact dd a{color:var(--accent);text-decoration:none;border-bottom:2px solid var(--accent)}
+.contact dd a:hover{color:var(--hi);border-color:var(--hi)}
+.contact dd{margin:0;font:500 1.05rem/1.3 var(--f-m);overflow-wrap:anywhere;min-width:0}
+footer{margin-top:clamp(64px,9vw,110px);padding-top:18px;border-top:3px solid var(--hi);font:400 .75rem/1.6 var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--mist)}
+
+@media (max-width:860px){
+.app{grid-template-columns:minmax(0,1fr);gap:0}
+.menu{flex-direction:row;align-items:center;gap:12px;padding-block:10px;background:var(--bg);z-index:5}
+.mark{width:52px;height:52px;font-size:.95rem}
+.menu ul{flex-direction:row;gap:6px;overflow-x:auto;scrollbar-width:none;min-width:0;padding:8px 14px 12px 4px}
+.menu ul::-webkit-scrollbar{display:none}
+.menu a{padding:10px 16px 10px 20px;font-size:1.1rem;white-space:nowrap}
+.menu a[aria-current="true"]{transform:rotate(var(--r)) skewX(-6deg) scale(1.05)}
+.menu li:has(a[aria-current="true"])::before{display:none}
+.menu li:has(a[aria-current="true"]){filter:drop-shadow(4px 4px 0 var(--cobalt))}
+.menu.fan li{transform-origin:50% 0;animation:fanm .45s cubic-bezier(.25,1,.4,1) backwards;animation-delay:calc(var(--n,0)*60ms)}
+section,header.hero{scroll-margin-top:80px}
+.mat{grid-template-columns:minmax(0,1fr)}
+.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ph:first-child{grid-column:1/-1;grid-row:auto;aspect-ratio:16/9}
+.ph:last-child{grid-column:1/-1;aspect-ratio:16/9}
+}
+@media (prefers-reduced-motion:reduce){.ch,.menu.fan li,.detail.on .ph{animation:none}.detail{transition:none}.wipe{display:none}}
+.ph-caption{position:absolute;right:0;bottom:0;left:0;padding:8px 10px;background:color-mix(in srgb,var(--ink) 88%,transparent);color:var(--hi);font:500 .72rem/1 var(--f-m);letter-spacing:.08em;text-transform:uppercase;text-align:center;backdrop-filter:blur(4px)}
+</style>
+</head>
+<body>
+<script>
+/* =====================================================================
+   CONFIGURACIÓN: aquí cambias tus proyectos, imágenes y links.
+   Edita solo lo que está entre comillas ' ' y no borres comas, llaves
+   { } ni corchetes [ ]. Si algo deja de cargar, casi siempre es una
+   coma o una comilla que falta.
+   ===================================================================== */
+
+/* PROYECTOS: las tarjetas de la sección "Piezas".
+   titulo      Nombre de la pieza.
+   texto       Descripción corta.
+   etiquetas   Programas o palabras clave, entre corchetes y separadas por comas.
+   imagen      Portada de la tarjeta (cuadrada se ve mejor).
+               Ejemplo: 'img/arcilla-portada.jpg'
+               Si la dejas vacía ('') sale un espacio de ejemplo.
+   alt         Descripción corta de la imagen (para lectores de pantalla).
+   fotos       Las fotos que se abren al pulsar la pieza.
+               Ejemplo: ['img/arcilla-1.jpg', 'img/arcilla-2.jpg', 'img/arcilla-3.jpg']
+               Con 6 fotos se arma el mosaico grande; con otra cantidad salen en cuadrícula.
+               Si la dejas vacía ([]) salen 6 placeholders.
+   enlace      Link opcional del proyecto (ArtStation, Sketchfab, etc.).
+               Ejemplo: 'https://www.artstation.com/artwork/xxxxx'
+   enlaceTexto Texto del botón del link. Ejemplo: 'Ver en ArtStation'
+*/
+var PROYECTOS=[
+  {titulo:'Azulejo Azul',
+   texto:'Material PBR de azulejo azul con acabado cerámico y detalles en mosaico.',
+   etiquetas:['PBR','Azulejo','Cerámica'],
+   imagen:'Renders/Renders/Azulejo azul/Sphere.png',
+   alt:'Esfera con material de azulejo azul',
+   fotos:['Renders/Renders/Azulejo azul/Sphere.png','Renders/Renders/Azulejo azul/Cuadricula.png','Renders/Renders/Azulejo azul/Base color.png','Renders/Renders/Azulejo azul/Normal.png','Renders/Renders/Azulejo azul/Rough.png','Renders/Renders/Azulejo azul/AO.png'],
+   enlace:'',
+   enlaceTexto:''},
+  {titulo:'Bricks',
+   texto:'Material PBR de ladrillo con variación de color, relieve y rugosidad.',
+   etiquetas:['PBR','Bricks','Ladrillo'],
+   imagen:'Renders/Renders/Bricks/Sphere.png',
+   alt:'Esfera con material de ladrillos',
+   fotos:['Renders/Renders/Bricks/Sphere.png','Renders/Renders/Bricks/TIles.png','Renders/Renders/Bricks/Base color.png','Renders/Renders/Bricks/Normal.png','Renders/Renders/Bricks/Rough.png','Renders/Renders/Bricks/Ao.png'],
+   enlace:'',
+   enlaceTexto:''},
+  {titulo:'Piso y Arena',
+   texto:'Material PBR combinado de piso arenoso con textura de arena y superficie irregular.',
+   etiquetas:['PBR','Piso','Arena'],
+   imagen:'Renders/Renders/Material 01 PISO Y ARENA/ESfera.png',
+   alt:'Esfera con material de piso y arena',
+   fotos:['Renders/Renders/Material 01 PISO Y ARENA/ESfera.png','Renders/Renders/Material 01 PISO Y ARENA/Cuadricula.png','Renders/Renders/Material 01 PISO Y ARENA/Base color.png','Renders/Renders/Material 01 PISO Y ARENA/NOrmal.png','Renders/Renders/Material 01 PISO Y ARENA/Rough.png','Renders/Renders/Material 01 PISO Y ARENA/AO.png'],
+   enlace:'',
+   enlaceTexto:''}
+];
+
+/* CONTACTO: la sección "Contacto".
+   etiqueta  Lo que se ve a la izquierda (Correo, ArtStation, Instagram...).
+   texto     Lo que se ve como texto del link.
+   enlace    A dónde lleva.
+             Correo:  'mailto:tu-correo@gmail.com'
+             Redes:   'https://www.artstation.com/tu-usuario'
+   Para agregar otra red copia una línea completa {...}, ponle una coma
+   al final de la línea anterior y cambia los datos. */
+var CONTACTO=[
+  {etiqueta:'Correo', texto:'ardyn00115@gmail.com', enlace:'mailto:ardyn00115@gmail.com'},
+  {etiqueta:'ArtStation', texto:'artstation.com/ardyn_01158', enlace:'https://www.artstation.com/ardyn_01158'}
+];
+</script>
+<div class="bg" aria-hidden="true"></div>
+<canvas id="rain" aria-hidden="true"></canvas>
+<div class="water" aria-hidden="true"></div>
+<div class="wipe" id="wipe" aria-hidden="true"><i></i><i></i></div>
+<div class="app">
+  <nav class="menu" aria-label="Secciones">
+    <div class="mark" aria-hidden="true"></div>
+    <ul>
+      <li><a href="#inicio" aria-current="true">Inicio</a></li>
+      <li><a href="#piezas">Piezas</a></li>
+      <li><a href="#material">Material</a></li>
+      <li><a href="#herramientas">Herramientas</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <header class="hero" id="inicio">
+      <p class="kicker">Portafolio</p>
+      <h1 class="name" aria-label="Adrian Ibarra">
+        <span class="ln" aria-hidden="true"><span class="ch" style="--i:0">A</span><span class="ch" style="--i:1">D</span><span class="ch" style="--i:2">R</span><span class="ch" style="--i:3">I</span><span class="ch" style="--i:4">A</span><span class="ch" style="--i:5">N</span></span>
+        <span class="ln l2" aria-hidden="true"><span class="ch" style="--i:6">I</span><span class="ch" style="--i:7">B</span><span class="ch" style="--i:8">A</span><span class="ch" style="--i:9">R</span><span class="ch" style="--i:10">R</span><span class="ch" style="--i:11">A</span></span>
+      </h1>
+      <div class="role">3D Texture Artist</div>
+      <p class="lede">Estudiante de Animación y Desarrollo de Videojuegos en la UVM. Hago texturizado PBR para props y personajes, y busco proyectos freelance.</p>
+      <div class="cta">
+        <a class="btn primary" href="#piezas">Ver piezas</a>
+        <a class="btn ghost" href="#contacto">Contacto</a>
+      </div>
+      <div class="maps">
+        <small>Mapas PBR con los que trabajo</small>
+        <span>Albedo</span><span>Roughness</span><span>Metallic</span><span>Normal</span><span>Height</span><span>AO</span>
+      </div>
+    </header>
+
+    <section id="piezas">
+      <div class="sh"><h2><span>Piezas</span></h2><p>Espacios para mis mejores renders</p></div>
+      <div class="grid" id="galleryGrid"></div>
+      <p class="note">Toca una pieza para ver más fotos del material.</p>
+    </section>
+
+    <section id="material">
+      <div class="sh"><h2><span>Material</span></h2><p>Demostración generada en esta página</p></div>
+      <div class="mat">
+        <canvas id="mat" width="256" height="256" role="img" aria-label="Material de metal oxidado generado con código. Cambia el mapa con los botones."></canvas>
+        <div>
+          <div class="tabs" role="tablist" aria-label="Mapas del material" id="tabs"></div>
+          <h3 id="mat-title">Render</h3>
+          <p id="mat-desc"></p>
+        </div>
+      </div>
+      <p class="note">Metal oxidado procedural, calculado por código en tu navegador. Sirve para ver cómo cada mapa PBR aporta al resultado final. No es una pieza del portafolio.</p>
+    </section>
+
+    <section id="herramientas">
+      <div class="sh"><h2><span>Herramientas</span></h2><p>Lo que uso cada día</p></div>
+      <ul class="tools">
+        <li><b>Substance Painter</b><span>Texturizado PBR</span></li>
+        <li><b>Substance Designer</b><span>Materiales procedurales</span></li>
+        <li><b>InstaMAT</b><span>Texturizado y materiales</span></li>
+        <li><b>ZBrush</b><span>Escultura digital</span></li>
+        <li><b>Blender</b><span>Modelado y retopología</span></li>
+        <li><b>Maya</b><span>Modelado</span></li>
+        <li><b>3ds Max</b><span>Modelado</span></li>
+      </ul>
+    </section>
+
+    <section id="contacto" class="contact">
+      <div class="sh"><h2><span>Contacto</span></h2><p>Disponible para freelance</p></div>
+      <h3>¿Necesitas texturas para tu proyecto?</h3>
+      <dl id="contactoLista"></dl>
+      <p class="note">Memento mori</p>
+    </section>
+
+    <footer>© 2026 Adrian Ibarra</footer>
+  </main>
+</div>
+
+<script>
+
+function createGalleryCard(p, index){
+  var n=index+1, article=document.createElement('article');
+  article.className='card';
+  var shot=document.createElement('div'); shot.className='shot';
+  var tag=document.createElement('span'); tag.className='tag';
+  tag.textContent=p.imagen ? 'Render ' + String(n).padStart(2,'0') : 'Ejemplo';
+  shot.appendChild(tag);
+  if(p.imagen){
+    var img=document.createElement('img');
+    img.src=p.imagen; img.alt=p.alt||p.titulo; img.loading=index===0?'eager':'lazy';
+    shot.appendChild(img);
+  }else{
+    var em=document.createElement('em'); em.textContent='Tu render aquí'; shot.appendChild(em);
+  }
+  var h3=document.createElement('h3'), btn=document.createElement('button');
+  btn.type='button'; btn.className='open'; btn.setAttribute('aria-expanded','false');
+  btn.setAttribute('aria-controls','detail-'+n); btn.textContent=p.titulo;
+  h3.appendChild(btn);
+  var txt=document.createElement('p'); txt.textContent=p.texto;
+  var chips=document.createElement('div'); chips.className='chips';
+  (p.etiquetas||[]).forEach(function(t){var s=document.createElement('span'); s.textContent=t; chips.appendChild(s);});
+  var more=document.createElement('span'); more.className='more'; more.setAttribute('aria-hidden','true'); more.textContent='+ Ver detalles';
+  article.appendChild(shot); article.appendChild(h3); article.appendChild(txt); article.appendChild(chips); article.appendChild(more);
+  return article;
+}
+
+(function(){
+  var grid=document.getElementById('galleryGrid');
+  if(!grid) return;
+  grid.innerHTML='';
+  if(typeof PROYECTOS==='undefined') return;
+  PROYECTOS.forEach(function(p,i){grid.appendChild(createGalleryCard(p,i));});
+})();
+
+/* Piezas: al pulsar una tarjeta se despliega un panel con fotos de detalle */
+(function(){
+  var grid=document.getElementById('galleryGrid');
+  if(!grid) return;
+  var still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var current=null, TILES=6, rt=0;
+
+  function colCount(){
+    var c=getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length;
+    return c>0?c:1;
+  }
+  function place(card,panel){
+    var cards=[].slice.call(grid.querySelectorAll('.card'));
+    var i=cards.indexOf(card), cols=colCount();
+    var last=Math.min(cards.length-1,(Math.floor(i/cols)+1)*cols-1);
+    cards[last].after(panel);
+  }
+  function buildPanel(n,title){
+    var p=(typeof PROYECTOS!=='undefined'&&PROYECTOS[n-1])||{};
+    var fotos=Array.isArray(p.fotos)?p.fotos.filter(Boolean):[];
+    var real=fotos.length>0;
+    var d=document.createElement('div');
+    d.className='detail'; d.id='detail-'+n;
+    d.setAttribute('role','region'); d.setAttribute('aria-labelledby','detail-'+n+'-t');
+    d.innerHTML='<div class="detail-in"><div class="detail-box"><div class="detail-head"><h4 id="detail-'+n+'-t"></h4><button type="button" class="close">Cerrar</button></div><div class="tiles"></div></div></div>';
+    d.querySelector('h4').textContent=title+' en detalle';
+    var tiles=d.querySelector('.tiles'), box=d.querySelector('.detail-box');
+    var total=real?fotos.length:TILES;
+    if(total!==6) tiles.classList.add('plain');
+    for(var k=0;k<total;k++){
+      var f=document.createElement('figure'); f.className='ph'; f.style.setProperty('--k',k+1);
+      if(real){
+        var im=document.createElement('img'); im.src=fotos[k]; im.alt=title+', foto '+(k+1);
+        var nombre=fotos[k].split('/').pop().split('.')[0].toLowerCase();
+        var etiqueta='Vista';
+        if(nombre.indexOf('esfera')!==-1||nombre.indexOf('sphere')!==-1){etiqueta='Render — Esfera'}
+        else if(nombre.indexOf('cuadricula')!==-1||nombre.indexOf('tiles')!==-1){etiqueta='Material — Cuadrícula'}
+        else if(nombre.indexOf('base color')!==-1){etiqueta='Base Color'}
+        else if(nombre.indexOf('normal')!==-1){etiqueta='Normal Map'}
+        else if(nombre.indexOf('rough')!==-1){etiqueta='Roughness'}
+        else if(nombre.indexOf('ao')!==-1){etiqueta='Ambient Occlusion — AO'}
+        else if(nombre.indexOf('height')!==-1){etiqueta='Height Map'}
+        f.classList.add('has-img'); f.appendChild(im);
+        var caption=document.createElement('figcaption'); caption.className='ph-caption'; caption.textContent=etiqueta;
+        f.appendChild(caption);
+      }else{
+        f.innerHTML='<span class="ph-tag">Placeholder</span><em>Foto '+(k+1)+'</em>';
+      }
+      tiles.appendChild(f);
+    }
+    if(!real){
+      var note=document.createElement('p'); note.className='note';
+      note.textContent='Fotos de ejemplo. Aquí van los acercamientos del material.';
+      box.appendChild(note);
+    }
+    if(p.enlace){
+      var a=document.createElement('a'); a.className='btn primary linkout';
+      a.href=p.enlace; a.target='_blank'; a.rel='noopener'; a.textContent=p.enlaceTexto||'Ver proyecto';
+      box.appendChild(a);
+    }
+    return d;
+  }
+  function setState(card,on){
+    var btn=card.querySelector('.open'), more=card.querySelector('.more');
+    btn.setAttribute('aria-expanded',on?'true':'false');
+    card.classList.toggle('is-open',on);
+    if(more) more.textContent=on?'− Cerrar detalles':'+ Ver detalles';
+  }
+  function close(opts){
+    if(!current) return;
+    var c=current; current=null;
+    setState(c.card,false);
+    c.panel.classList.remove('on');
+    if(still||(opts&&opts.now)) c.panel.remove();
+    else setTimeout(function(){c.panel.remove()},480);
+    if(opts&&opts.focus) c.card.querySelector('.open').focus();
+  }
+  function open(card){
+    close({now:true});
+    var n=[].indexOf.call(grid.querySelectorAll('.card'),card)+1;
+    var old=document.getElementById('detail-'+n); if(old) old.remove();
+    var panel=buildPanel(n,card.querySelector('.open').textContent);
+    place(card,panel);
+    setState(card,true);
+    current={card:card,panel:panel};
+    void panel.offsetHeight;
+    panel.classList.add('on');
+    requestAnimationFrame(function(){panel.scrollIntoView({block:'start',behavior:still?'auto':'smooth'})});
+  }
+  grid.addEventListener('click',function(e){
+    if(e.target.closest('.close')){close({focus:true});return}
+    var btn=e.target.closest('.open');
+    if(!btn) return;
+    var card=btn.closest('.card');
+    if(current&&current.card===card) close(); else open(card);
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&current)close({focus:true})});
+  window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){if(current)place(current.card,current.panel)},150)});
+})();
+
+
+
+/* Menú: marca la sección visible */
+(function(){var links=document.querySelectorAll('.menu a'),map={},ids=[],menu=document.querySelector('.menu'),wipe=document.getElementById('wipe'),locked=false,lockT=0,ticking=false;
+var still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function fan(){menu.classList.remove('fan');void menu.offsetWidth;menu.classList.add('fan')}
+function wipeGo(){if(still)return;wipe.classList.remove('go');void wipe.offsetWidth;wipe.classList.add('go')}
+function setActive(id){var a=map[id];if(!a||a.getAttribute('aria-current')==='true')return;links.forEach(function(x){x.removeAttribute('aria-current')});a.setAttribute('aria-current','true')}
+links.forEach(function(a){var id=a.getAttribute('href').slice(1);map[id]=a;ids.push(id);
+a.addEventListener('click',function(){setActive(id);locked=true;clearTimeout(lockT);lockT=setTimeout(function(){locked=false},1200);fan();wipeGo()})});
+function spy(){ticking=false;
+if(locked){clearTimeout(lockT);lockT=setTimeout(function(){locked=false},150);return}
+var probe=window.innerHeight*.4,cur=ids[0],atEnd=window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4;
+ids.forEach(function(id){var el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=probe)cur=id});
+if(atEnd)cur=ids[ids.length-1];
+setActive(cur)}
+window.addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(spy)}},{passive:true});
+fan();spy();})();
+
+/* Material procedural con mapas PBR */
+(function(){
+var cv=document.getElementById('mat');if(!cv||!cv.getContext)return;
+var ctx=cv.getContext('2d'),N=256,NN=N*N;
+function hash(x,y,s){var h=Math.imul(x,374761393)^Math.imul(y,668265263)^Math.imul(s,1274126177);h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return(h>>>0)/4294967296}
+function vnoise(x,y,s){var xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi,u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf),a=hash(xi,yi,s),b=hash(xi+1,yi,s),c=hash(xi,yi+1,s),d=hash(xi+1,yi+1,s);return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v}
+function fbm(x,y,s,o){var v=0,a=.5,f=1,t=0;for(var i=0;i<o;i++){v+=a*vnoise(x*f,y*f,s+i);t+=a;a*=.5;f*=2}return v/t}
+function sm(a,b,x){var t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t)}
+function cl(x){return x<0?0:x>1?1:x}
+var H=new Float32Array(NN),M=new Float32Array(NN),HV=new Float32Array(NN),ALB=new Float32Array(NN*3),ROU=new Float32Array(NN),AO=new Float32Array(NN),NRM=new Float32Array(NN*3),x,y,i,k;
+for(y=0;y<N;y++)for(x=0;x<N;x++){i=y*N+x;var u=x/N,v=y/N,h=fbm(u*7,v*7,3,5),m=sm(.47,.6,fbm(u*3.2+10,v*3.2+10,21,4)),p=fbm(u*24,v*24,41,3);H[i]=h*.6+m*p*.4;M[i]=m}
+var hmin=9,hmax=-9;for(i=0;i<NN;i++){if(H[i]<hmin)hmin=H[i];if(H[i]>hmax)hmax=H[i]}
+for(i=0;i<NN;i++)HV[i]=(H[i]-hmin)/(hmax-hmin);
+var steel=[.52,.56,.62],r0=[.36,.15,.06],r1=[.74,.38,.13];
+for(y=0;y<N;y++)for(x=0;x<N;x++){i=y*N+x;
+var xl=H[y*N+((x+N-1)%N)],xr=H[y*N+((x+1)%N)],yu=H[((y+N-1)%N)*N+x],yd=H[((y+1)%N)*N+x],nx=-(xr-xl)*14,ny=-(yd-yu)*14,nz=1,l=Math.sqrt(nx*nx+ny*ny+nz*nz);
+NRM[i*3]=nx/l;NRM[i*3+1]=ny/l;NRM[i*3+2]=nz/l;
+var hv=HV[i],mk2=M[i],sc=.75+.45*hv;
+for(k=0;k<3;k++){var rust=r0[k]+(r1[k]-r0[k])*hv;ALB[i*3+k]=cl(steel[k]*sc*(1-mk2)+rust*mk2)}
+ROU[i]=cl(.28+.55*mk2+.17*(1-hv));AO[i]=.3+.7*sm(.2,.7,hv)}
+var MODES=[
+{id:'render',label:'Render',desc:'El resultado final con luz. Mueve el cursor sobre la imagen para mover la luz y ver cómo reacciona el relieve.'},
+{id:'albedo',label:'Albedo',desc:'El color puro del material, sin luces ni sombras. Aquí el óxido ya se distingue del acero.'},
+{id:'roughness',label:'Roughness',desc:'Qué tan áspera es la superficie. Blanco es mate y negro es pulido. El óxido es más mate que el metal.'},
+{id:'metallic',label:'Metallic',desc:'Dice qué parte es metal. Casi siempre es blanco o negro. El óxido deja de comportarse como metal.'},
+{id:'normal',label:'Normal',desc:'Relieve falso. Cada pixel guarda hacia dónde mira la superficie, sin agregar geometría.'},
+{id:'height',label:'Height',desc:'La altura de cada punto. De este mapa sale el relieve que se ve en el normal.'},
+{id:'ao',label:'AO',desc:'Oclusión ambiental. Oscurece grietas y huecos donde la luz llega poco.'}];
+var mode='render',light={x:-.55,y:-.6},queued=false,img=ctx.createImageData(N,N),px=img.data;
+function paint(){queued=false;var o=0;
+if(mode==='render'){var lz=.55,ll=Math.sqrt(light.x*light.x+light.y*light.y+lz*lz),Lx=light.x/ll,Ly=light.y/ll,Lz=lz/ll,hx=Lx,hy=Ly,hz=Lz+1,hl=Math.sqrt(hx*hx+hy*hy+hz*hz);hx/=hl;hy/=hl;hz/=hl;
+for(i=0;i<NN;i++,o+=4){var nx=NRM[i*3],ny=NRM[i*3+1],nz=NRM[i*3+2],diff=Math.max(0,nx*Lx+ny*Ly+nz*Lz),ndh=Math.max(0,nx*hx+ny*hy+nz*hz),rr=ROU[i],met=1-M[i],shin=8+(1-rr)*(1-rr)*160,spec=Math.pow(ndh,shin)*(1-rr)*(.25+.75*met)*1.3,ao=AO[i];
+for(k=0;k<3;k++){var al=ALB[i*3+k],tint=(1-met)+met*al;px[o+k]=cl(al*(.12+.95*diff)*ao+spec*tint*ao)*255}px[o+3]=255}}
+else{for(i=0;i<NN;i++,o+=4){var r,g,b;
+if(mode==='albedo'){r=ALB[i*3];g=ALB[i*3+1];b=ALB[i*3+2]}
+else if(mode==='normal'){r=NRM[i*3]*.5+.5;g=-NRM[i*3+1]*.5+.5;b=NRM[i*3+2]*.5+.5}
+else{var s=mode==='roughness'?ROU[i]:mode==='metallic'?1-M[i]:mode==='height'?HV[i]:AO[i];r=g=b=s}
+px[o]=cl(r)*255;px[o+1]=cl(g)*255;px[o+2]=cl(b)*255;px[o+3]=255}}
+ctx.putImageData(img,0,0)}
+function schedule(){if(!queued){queued=true;requestAnimationFrame(paint)}}
+var tabs=document.getElementById('tabs'),title=document.getElementById('mat-title'),desc=document.getElementById('mat-desc');
+function setMode(id){mode=id;MODES.forEach(function(m){var b=document.getElementById('tab-'+m.id);b.setAttribute('aria-selected',m.id===id?'true':'false');if(m.id===id){title.textContent=m.label;desc.textContent=m.desc}});schedule()}
+MODES.forEach(function(m){var b=document.createElement('button');b.type='button';b.id='tab-'+m.id;b.setAttribute('role','tab');b.textContent=m.label;b.addEventListener('click',function(){setMode(m.id)});tabs.appendChild(b)});
+cv.addEventListener('pointermove',function(e){var r=cv.getBoundingClientRect();light.x=((e.clientX-r.left)/r.width)*2-1;light.y=((e.clientY-r.top)/r.height)*2-1;if(mode==='render')schedule()});
+cv.addEventListener('pointerleave',function(){light.x=-.55;light.y=-.6;if(mode==='render')schedule()});
+setMode('render');
+})();
+
+/* Contacto: se arma con la lista CONTACTO de la configuración */
+(function(){
+  var dl=document.getElementById('contactoLista');
+  if(!dl||typeof CONTACTO==='undefined') return;
+  CONTACTO.forEach(function(c){
+    var row=document.createElement('div'), dt=document.createElement('dt'), dd=document.createElement('dd');
+    dt.textContent=c.etiqueta;
+    if(c.enlace){
+      var a=document.createElement('a'); a.href=c.enlace; a.textContent=c.texto;
+      if(/^https?:/i.test(c.enlace)){a.target='_blank'; a.rel='noopener';}
+      dd.appendChild(a);
+    }else{ dd.textContent=c.texto; }
+    row.appendChild(dt); row.appendChild(dd); dl.appendChild(row);
+  });
+})();
+
+/* Lluvia: gotas con perspectiva que se rompen en ondas sobre el agua */
+(function(){
+  var cv=document.getElementById('rain');
+  if(!cv||!cv.getContext) return;
+  var ctx=cv.getContext('2d');
+  var still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W=0,H=0,drops=[],ripples=[],last=0;
+  function mk(initial){
+    var z=Math.random();
+    return {x:Math.random()*(W+160)-40,y:initial?Math.random()*H:-Math.random()*H*.3,z:z,len:16+z*76,v:360+z*880,w:.5+z*1.3,a:.1+z*.42,land:H*(.88+z*.1)};
+  }
+  function resize(){
+    var dpr=Math.min(window.devicePixelRatio||1,2);
+    W=window.innerWidth;H=window.innerHeight;
+    cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    var n=Math.round(Math.min(220,Math.max(70,W/7)));
+    drops=[];for(var i=0;i<n;i++)drops.push(mk(true));
+    ripples=[];draw();
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);ctx.lineCap='round';
+    for(var i=0;i<drops.length;i++){
+      var d=drops[i];
+      ctx.strokeStyle='rgba(120,225,255,'+d.a+')';ctx.lineWidth=d.w;
+      ctx.beginPath();ctx.moveTo(d.x,d.y);ctx.lineTo(d.x+.12*d.len,d.y-d.len);ctx.stroke();
+    }
+    ctx.lineWidth=1.2;
+    for(var j=0;j<ripples.length;j++){
+      var r=ripples[j];
+      ctx.strokeStyle='rgba(63,220,255,'+(r.a*(1-r.r/r.max))+')';
+      ctx.beginPath();ctx.ellipse(r.x,r.y,r.r,r.r*.28,0,0,Math.PI*2);ctx.stroke();
+    }
+  }
+  function step(dt){
+    for(var i=0;i<drops.length;i++){
+      var d=drops[i];
+      d.y+=d.v*dt;d.x-=d.v*.12*dt;
+      if(d.y>d.land){
+        if(ripples.length<70&&d.z>.25)ripples.push({x:d.x,y:d.land,r:.01,max:8+d.z*30,a:.25+d.z*.4});
+        drops[i]=mk(false);
+      }
+    }
+    for(var j=ripples.length-1;j>=0;j--){
+      var r=ripples[j];r.r+=r.max*1.4*dt;
+      if(r.r>=r.max)ripples.splice(j,1);
+    }
+  }
+  function loop(t){
+    var dt=Math.min(.05,(t-last)/1000||0);last=t;
+    step(dt);draw();requestAnimationFrame(loop);
+  }
+  window.addEventListener('resize',resize);
+  resize();
+  if(!still){
+    requestAnimationFrame(loop);
+    window.addEventListener('pointerdown',function(e){
+      for(var k=0;k<3;k++)ripples.push({x:e.clientX,y:e.clientY,r:.01,max:40+k*30,a:.6-k*.15});
+    });
+  }
+})();
+</script>
+</body>
+</html>
